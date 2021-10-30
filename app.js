@@ -33,6 +33,31 @@ Display.prototype.clear = function () {
   libraryForm.reset();
 };
 
+// Implements the validate function
+
+Display.prototype.validate = function (book) {
+  if (book.name.length < 2 || book.author.length < 2) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+// Shows the alert on the basis of action
+
+Display.prototype.show = function (type, showMessage) {
+  let message = document.getElementById("message");
+  message.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                        <strong>Message</strong> ${showMessage}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>`;
+  setTimeout(function () {
+    message.innerHTML = "";
+  }, 2000);
+};
+
 //Add Submit Event Listner
 
 let libraryForm = document.getElementById("libraryForm");
@@ -43,6 +68,7 @@ function libraryFormSubmit(e) {
   console.log("You have submitted the form");
   let name = document.getElementById("name").value;
   let author = document.getElementById("author").value;
+  //   let type = document.getElementById("type").value;
 
   let fiction = document.getElementById("fiction");
   let technical = document.getElementById("technical");
@@ -59,7 +85,13 @@ function libraryFormSubmit(e) {
   let book = new Book(name, author, type);
   console.log(book);
   let display = new Display();
-  display.add(book);
-  display.clear();
+  if (display.validate(book)) {
+    display.add(book);
+    display.clear();
+    display.show("success", "Book is added Successfuly");
+  } else {
+    //Throw error
+    display.show("danger", "Sorry this book cant be added");
+  }
   e.preventDefault();
 }
